@@ -111,7 +111,8 @@ def draw_tree(node, sequence, min_length, printed_peptides=None, start_index=0, 
         if peptide_position not in printed_peptides:
             aligned_peptide = print_aligned_peptide(node.peptide, start_index, sequence)
             if len(node.peptide) < min_length:
-                aligned_peptide = '\033[31m' + aligned_peptide + '\033[0m'  # Print in red color
+                aligned_peptide = aligned_peptide  # Print in red color
+                #aligned_peptide = '\033[31m' + aligned_peptide + '\033[0m'  # Print in red color
             result += aligned_peptide + "\n"
             printed_peptides.add(peptide_position)
 
