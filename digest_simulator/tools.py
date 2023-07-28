@@ -226,44 +226,44 @@ def predict_proteases(peptide_sequences, proteases, original_sequence):
     return identified_proteases
 
 
-def print_tree(node, sequence, min_length, printed_peptides=None, start_index=0):
-    """
-    Prints the given peptide tree. 
-    
-    Parameters
-    ----------
-    node : PeptideNode
-        The node to print the peptide tree for.
-    sequence : str
-        The sequence to align the peptides to.
-    min_length : int    
-        The minimum length of the peptides in the peptide tree.
-    printed_peptides : set of tuple, optional
-        The set of peptides already printed. The default is None.
-    start_index : int, optional
-        The start index of the node peptide in the sequence. The default is 0.
-    """
-    if printed_peptides is None:
-        printed_peptides = set()
-
-    if node.parent is None:
-        print(sequence)
-
-    if node.parent is not None:
-        peptide_position = (node.peptide, node.parent.peptide)
-        if peptide_position not in printed_peptides:
-            aligned_peptide = print_aligned_peptide(node.peptide, start_index, sequence)
-            if len(node.peptide) < min_length:
-                # aligned_peptide = '\033[31m' + aligned_peptide + '\033[0m'  # Print in red color
-                aligned_peptide = aligned_peptide
-
-            print(aligned_peptide)
-            printed_peptides.add(peptide_position)
-
-    for child in node.children:
-        for match in re.finditer(re.escape(child.peptide), sequence[start_index:]):
-            child_start_index = match.start() + start_index
-            print_tree(child, sequence, min_length, printed_peptides, child_start_index + 1)
+#def print_tree(node, sequence, min_length, printed_peptides=None, start_index=0):
+#    """
+#    Prints the given peptide tree. 
+#    
+#    Parameters
+#    ----------
+#    node : PeptideNode
+#        The node to print the peptide tree for.
+#    sequence : str
+#        The sequence to align the peptides to.
+#    min_length : int    
+#        The minimum length of the peptides in the peptide tree.
+#    printed_peptides : set of tuple, optional
+#        The set of peptides already printed. The default is None.
+#    start_index : int, optional
+#        The start index of the node peptide in the sequence. The default is 0.
+#    """
+#    if printed_peptides is None:
+#        printed_peptides = set()
+#
+#    if node.parent is None:
+#        print(sequence)
+#
+#    if node.parent is not None:
+#        peptide_position = (node.peptide, node.parent.peptide)
+#        if peptide_position not in printed_peptides:
+#            aligned_peptide = print_aligned_peptide(node.peptide, start_index, sequence)
+#            if len(node.peptide) < min_length:
+#                # aligned_peptide = '\033[31m' + aligned_peptide + '\033[0m'  # Print in red color
+#                aligned_peptide = aligned_peptide
+#
+#            print(aligned_peptide)
+#            printed_peptides.add(peptide_position)
+#
+#    for child in node.children:
+#        for match in re.finditer(re.escape(child.peptide), sequence[start_index:]):
+#            child_start_index = match.start() + start_index
+#            print_tree(child, sequence, min_length, printed_peptides, child_start_index + 1)
 
 
 def print_aligned_peptide(peptide, start_index, sequence):
