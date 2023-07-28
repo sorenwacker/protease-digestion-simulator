@@ -1,5 +1,4 @@
 tabulate
 pandas
 streamlit
-streamlit-scrollable-textbox
 .
