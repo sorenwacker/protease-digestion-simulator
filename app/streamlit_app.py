@@ -47,5 +47,6 @@ if sequence and selected_proteases:
         user_sequences = user_sequences.split('\n')
         df = simulator.predict_proteases(user_sequences)
         df['Probabilty [%]'] = df['Probability'] * 100
+        df = df.sort_values('Probabilty [%]', ascending=False)
         df.drop('Probability', axis=1, inplace=True)
         st.markdown(df.round(0).to_markdown())
