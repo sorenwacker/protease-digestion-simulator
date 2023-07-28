@@ -5,6 +5,22 @@ from .PeptideNode import PeptideNode
 
 
 def generate_peptide_tree(node, proteases, depth=0, max_depth=None, min_length=0):
+    """
+    Generates a peptide tree for the given node and proteases.
+
+    Parameters
+    ----------
+    node : PeptideNode
+        The node to generate the peptide tree for.
+    proteases : list of Protease
+        The list of proteases to use for generating the peptide tree.
+    depth : int, optional
+        The depth of the node in the peptide tree. The default is 0.  
+    max_depth : int, optional
+        The maximum depth of the peptide tree. The default is None.
+    min_length : int, optional
+        The minimum length of the peptides in the peptide tree. The default is 0.
+    """
     if depth >= max_depth:
         return
 
@@ -18,7 +34,19 @@ def generate_peptide_tree(node, proteases, depth=0, max_depth=None, min_length=0
                     node.add_child(child_node)
                     generate_peptide_tree(child_node, proteases, depth + 1, max_depth)
                     
+
 def find_peptide_positions(sequence, peptide):
+  """
+  Finds the positions of the given peptide in the given sequence.
+
+  Parameters
+  ----------
+  sequence : str
+      The sequence to search for the peptide.
+  peptide : str
+      The peptide to search for in the sequence.  
+  """
+    
     positions = []
     index = 0
     while index < len(sequence):
@@ -29,13 +57,40 @@ def find_peptide_positions(sequence, peptide):
         index += 1
     return positions
     
+
 def print_aligned_peptide(peptide, position, sequence):
+    """
+    Prints the given peptide aligned to the given position in the given sequence.
+
+    Parameters
+    ----------
+    peptide : str
+        The peptide to print.
+    position : int
+        The position to align the peptide to.
+    sequence : str
+        The sequence to align the peptide to.   
+    """
     aligned_peptide = [' '] * len(sequence)
     aligned_peptide[position:position + len(peptide)] = peptide
     return ''.join(aligned_peptide)
 
 
 def print_tree(node, sequence, printed_peptides=None, start_index=0):
+    """
+    Prints the given peptide tree.
+
+    Parameters
+    ----------
+    node : PeptideNode
+        The node to print the peptide tree for.
+    sequence : str
+        The sequence to align the peptides to.
+    printed_peptides : set of tuple, optional
+        The set of peptides already printed. The default is None.
+    start_index : int, optional
+        The start index of the node peptide in the sequence. The default is 0.
+    """
     if printed_peptides is None:
         printed_peptides = set()
 
@@ -53,6 +108,16 @@ def print_tree(node, sequence, printed_peptides=None, start_index=0):
 
             
 def extract_peptide_sequences(node, root=True):
+    """
+    Extracts the peptide sequences from the given peptide tree.
+
+    Parameters
+    ----------
+    node : PeptideNode
+        The node to extract the peptide sequences from.
+    root : bool, optional
+        Indicates whether the given node is the root of the peptide tree. The default is True.
+    """
     peptide_sequences = set()
 
     if not root:
@@ -135,6 +200,22 @@ def identify_known_proteases(peptide_sequences, proteases, original_sequence):
 
 
 def print_tree(node, sequence, min_length, printed_peptides=None, start_index=0):
+    """
+    Prints the given peptide tree. 
+    
+    Parameters
+    ----------
+    node : PeptideNode
+        The node to print the peptide tree for.
+    sequence : str
+        The sequence to align the peptides to.
+    min_length : int    
+        The minimum length of the peptides in the peptide tree.
+    printed_peptides : set of tuple, optional
+        The set of peptides already printed. The default is None.
+    start_index : int, optional
+        The start index of the node peptide in the sequence. The default is 0.
+    """
     if printed_peptides is None:
         printed_peptides = set()
 
@@ -157,12 +238,36 @@ def print_tree(node, sequence, min_length, printed_peptides=None, start_index=0)
 
 
 def print_aligned_peptide(peptide, start_index, sequence):
+    """
+    Prints the given peptide aligned to the given start index in the given sequence.
+    
+    Parameters
+    ----------
+    peptide : str
+        The peptide to print.
+    start_index : int
+        The start index to align the peptide to.
+    sequence : str
+        The sequence to align the peptide to.
+    """
     aligned_peptide = [' '] * len(sequence)
     aligned_peptide[start_index - 1:start_index - 1 + len(peptide)] = peptide
     return ''.join(aligned_peptide)    
 
 
 def write_proteins_to_mascot_csv_file(protein_sequences, acc='alpha', file_name="output.csv"):
+    """
+    Writes the given protein sequences to a csv file in the format of Mascot csv file.
+
+    Parameters
+    ----------
+    protein_sequences : list of str
+        The list of protein sequences to write to the csv file.
+    acc : str, optional
+        The accession number of the protein sequences. The default is 'alpha'.
+    file_name : str, optional
+        The name of the csv file. The default is "output.csv".
+    """
     header = ["prot_hit_num", "prot_acc", "prot_mass", "pep_query", "pep_rank", 
               "pep_isbold", "pep_isunique", "pep_exp_mz", "pep_exp_mr", "pep_exp_z",
               "pep_calc_mr", "pep_delta", "pep_miss", "pep_score", "pep_expect",
