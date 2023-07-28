@@ -17,7 +17,7 @@ sequence = st.text_input('Enter protein sequence', value=hemoglobin_beta_sequenc
 selected_proteases = st.multiselect('Select proteases', list(available_proteases.keys()))
 
 # Initialize the DigestionSimulator with the entered sequence and selected proteases
-min_peptide_length = st.slider('Minimum peptide length:', min_value=0, max_value=10, value=3, step=1)
+min_peptide_length = st.slider('Minimum peptide length:', min_value=0, max_value=20, value=3, step=1)
 
 
 if sequence and selected_proteases:
