@@ -45,3 +45,17 @@ class Falcipain3(Protease):
 class PfSUB1(Protease):
     def __init__(self):
         super().__init__(name="PfSUB1", cleavage_residues=['R', 'K', 'L'], no_cleavage_after=[], cleavage_position='C')    
+
+
+# Available proteases dictionary
+available_proteases = {
+    "Trypsin": Trypsin,
+    "Chymotrypsin": Chymotrypsin,
+    "Pepsin": Pepsin,
+    "Elastase": Elastase,
+    "Thrombin": Thrombin,
+    "Plasmepsin": Plasmepsin,
+    "Falcipain2": Falcipain2,
+    "Falcipain3": Falcipain3,
+    "PfSUB1": PfSUB1,
+}

@@ -1,10 +1,13 @@
 import csv
+import re
+
+from collections import Counter
 
 from .PeptideNode import PeptideNode
 
 
 
-def generate_peptide_tree(node, proteases, depth=0, max_depth=None, min_length=0):
+def generate_peptide_tree(node, proteases, depth=0, max_depth=None, min_length=0, peptides_added=None):
     """
     Generates a peptide tree for the given node and proteases.
 
@@ -21,6 +24,10 @@ def generate_peptide_tree(node, proteases, depth=0, max_depth=None, min_length=0
     min_length : int, optional
         The minimum length of the peptides in the peptide tree. The default is 0.
     """
+
+    if peptides_added is None:
+        peptides_added = []
+
     if depth >= max_depth:
         return
 
@@ -28,24 +35,24 @@ def generate_peptide_tree(node, proteases, depth=0, max_depth=None, min_length=0
         cleaved_peptides = protease.cleave(node.peptide)
         for peptide in cleaved_peptides:
             # create a child node only when the peptide is different from the parent peptide
-            if peptide != node.peptide:
-                if len(peptide) > min_length:
+            if (peptide != node.peptide) and (len(peptide) > min_length) and (peptide not in peptides_added):
                     child_node = PeptideNode(peptide, parent=node)
                     node.add_child(child_node)
-                    generate_peptide_tree(child_node, proteases, depth + 1, max_depth)
+                    peptides_added.append(peptide)
+                    generate_peptide_tree(child_node, proteases, depth + 1, max_depth, min_length=min_length, peptides_added=peptides_added)
                     
 
 def find_peptide_positions(sequence, peptide):
-  """
-  Finds the positions of the given peptide in the given sequence.
+    """
+    Finds the positions of the given peptide in the given sequence.
 
-  Parameters
-  ----------
-  sequence : str
-      The sequence to search for the peptide.
-  peptide : str
-      The peptide to search for in the sequence.  
-  """
+    Parameters
+    ----------
+    sequence : str
+        The sequence to search for the peptide.
+    peptide : str
+        The peptide to search for in the sequence.  
+    """
     
     positions = []
     index = 0
@@ -76,7 +83,7 @@ def print_aligned_peptide(peptide, position, sequence):
     return ''.join(aligned_peptide)
 
 
-def print_tree(node, sequence, printed_peptides=None, start_index=0):
+def draw_tree(node, sequence, min_length, printed_peptides=None, start_index=0, result=None):
     """
     Prints the given peptide tree.
 
@@ -86,25 +93,44 @@ def print_tree(node, sequence, printed_peptides=None, start_index=0):
         The node to print the peptide tree for.
     sequence : str
         The sequence to align the peptides to.
+    min_length : int
+        The minimum length of the peptides in the peptide tree.
     printed_peptides : set of tuple, optional
-        The set of peptides already printed. The default is None.
+        The set of peptides already printed. The default is None.   
     start_index : int, optional
         The start index of the node peptide in the sequence. The default is 0.
     """
     if printed_peptides is None:
         printed_peptides = set()
 
+    if node.parent is None:
+        result = sequence + "\n"
+
     if node.parent is not None:
-        peptide_position = (node.peptide, start_index)
+        peptide_position = (node.peptide, node.parent.peptide)
         if peptide_position not in printed_peptides:
-            aligned_peptide = ' ' * start_index + node.peptide
-            print(aligned_peptide)
+            aligned_peptide = print_aligned_peptide(node.peptide, start_index, sequence)
+            if len(node.peptide) < min_length:
+                aligned_peptide = '\033[31m' + aligned_peptide + '\033[0m'  # Print in red color
+            result += aligned_peptide + "\n"
             printed_peptides.add(peptide_position)
 
     for child in node.children:
         for match in re.finditer(re.escape(child.peptide), sequence[start_index:]):
             child_start_index = match.start() + start_index
-            print_tree(child, sequence, printed_peptides, child_start_index + 1)
+            result = draw_tree(child, sequence, min_length, printed_peptides, child_start_index + 1, result)
+
+    return result
+
+
+def print_tree(*args, **kwargs):
+    print(draw_tree(*args, **kwargs))
+
+
+def print_aligned_peptide(peptide, start_index, sequence):
+    aligned_peptide = [' '] * len(sequence)
+    aligned_peptide[start_index - 1:start_index - 1 + len(peptide)] = peptide
+    return ''.join(aligned_peptide) 
 
             
 def extract_peptide_sequences(node, root=True):
@@ -166,7 +192,7 @@ def analyze_cleavage_sites(peptide_sequences):
     return cleavage_sites
 
 
-def identify_known_proteases(peptide_sequences, proteases, original_sequence):
+def predict_proteases(peptide_sequences, proteases, original_sequence):
     """
     Identifies known proteases based on the given peptide sequences and original sequence.
     
