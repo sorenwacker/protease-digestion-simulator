@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
 
+install_requires = ['pandas']
+
 config = {
     'description': 'Predicts breakdown of protein sequences by proteases',
     'author': 'Soren Wacker',
