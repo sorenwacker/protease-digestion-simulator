@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit_scrollable_textbox as stx
 
 from digest_simulator.DigestionSimulator import DigestionSimulator  # assuming the class is defined in digestion_simulator.py
 from digest_simulator.proteases import available_proteases
@@ -33,7 +32,6 @@ if sequence and selected_proteases:
     st.subheader('Peptide Tree')
     
     st.text(simulator.draw_tree().replace(' ', '-'))
-    #stx.scrollableTextbox(simulator.draw_tree().replace(' ', '-'), fontFamily='Monospace', height=1000)
 
     # Extract and display unique peptide sequences
     st.subheader('Predicted (unique) peptide sequences.')
