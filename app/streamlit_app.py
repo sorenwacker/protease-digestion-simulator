@@ -21,7 +21,7 @@ min_peptide_length = st.slider('Minimum peptide length:', min_value=0, max_value
 
 if sequence and selected_proteases:
 
-    st.header('Digenstion prediction')    
+    st.header('Digestion prediction')    
     # Map the names of the selected proteases to their instances
     selected_protease_instances = [available_proteases[protease]() for protease in selected_proteases]
 
@@ -36,7 +36,7 @@ if sequence and selected_proteases:
     simulator.extract_unique_peptide_sequences()
     st.text('\n'.join(sorted(simulator.unique_peptide_sequences, key=len)))
 
-    st.header('Predict Proteases')
+    st.header('Predict proteases')
     # Input field for user to add their own sequences
     user_sequences = st.text_area('Enter your own experimentally observed sequences (each on a new line).')
 
