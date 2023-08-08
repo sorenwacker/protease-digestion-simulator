@@ -1,6 +1,8 @@
 import streamlit as st
 
 from digest_simulator.DigestionSimulator import DigestionSimulator  # assuming the class is defined in digestion_simulator.py
+from digest_simulator.ProteasePredictor import ProteasePredictor
+
 from digest_simulator.proteases import available_proteases
 
 st.set_page_config(layout="wide")
@@ -47,8 +49,9 @@ if sequence and selected_proteases:
     if user_sequences:
         # convert the user input into a list of sequences
         user_sequences = user_sequences.split('\n')
-        df = simulator.predict_proteases(user_sequences)
-        df['Probabilty [%]'] = df['Probability'] * 100
+        pp = ProteasePredictor(sequence, selected_protease_instances)
+        df = pp.predict(user_sequences)
+        df['Probabilty [%]'] = df['Score'] * 100
         df = df.sort_values('Probabilty [%]', ascending=False).reset_index(drop=True)
-        df.drop('Probability', axis=1, inplace=True)
+        df.drop('Score', axis=1, inplace=True)
         st.markdown(df.round(0).to_markdown())

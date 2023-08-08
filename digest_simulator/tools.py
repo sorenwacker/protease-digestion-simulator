@@ -2,9 +2,9 @@ import csv
 import re
 
 from collections import Counter
+from itertools import combinations
 
 from .PeptideNode import PeptideNode
-
 
 
 def generate_peptide_tree(node, proteases, depth=0, max_depth=None, min_length=0, peptides_added=None):
@@ -191,79 +191,6 @@ def analyze_cleavage_sites(peptide_sequences):
             cleavage_site = sequence[i:i+2]
             cleavage_sites.append(cleavage_site)
     return cleavage_sites
-
-
-def predict_proteases(peptide_sequences, proteases, original_sequence):
-    """
-    Identifies known proteases based on the given peptide sequences and original sequence.
-    
-    Parameters:
-    peptide_sequences (list of str): The list of peptide sequences.
-    proteases (list of Protease): The list of known proteases.
-    original_sequence (str): The original peptide sequence.
-    
-    Returns:
-    list of tuple: Each tuple contains the name of the protease, the number of matched sites, and the probability of match.
-    """
-    identified_proteases = []
-
-    # Remove duplicates from peptide_sequences
-    peptide_sequences = list(set(peptide_sequences))
-
-    for protease in proteases:
-        matched_sites_count = 0
-        possible_sites_count = calculate_possible_cleavage_sites(protease, original_sequence)
-        cleaved_peptides = protease.cleave(original_sequence)
-        
-        for peptide_sequence in peptide_sequences:
-            if peptide_sequence in cleaved_peptides:
-                matched_sites_count += 1
-
-        probability = matched_sites_count / possible_sites_count if possible_sites_count != 0 else 0
-
-        identified_proteases.append((protease.name, matched_sites_count, probability))
-
-    return identified_proteases
-
-
-#def print_tree(node, sequence, min_length, printed_peptides=None, start_index=0):
-#    """
-#    Prints the given peptide tree. 
-#    
-#    Parameters
-#    ----------
-#    node : PeptideNode
-#        The node to print the peptide tree for.
-#    sequence : str
-#        The sequence to align the peptides to.
-#    min_length : int    
-#        The minimum length of the peptides in the peptide tree.
-#    printed_peptides : set of tuple, optional
-#        The set of peptides already printed. The default is None.
-#    start_index : int, optional
-#        The start index of the node peptide in the sequence. The default is 0.
-#    """
-#    if printed_peptides is None:
-#        printed_peptides = set()
-#
-#    if node.parent is None:
-#        print(sequence)
-#
-#    if node.parent is not None:
-#        peptide_position = (node.peptide, node.parent.peptide)
-#        if peptide_position not in printed_peptides:
-#            aligned_peptide = print_aligned_peptide(node.peptide, start_index, sequence)
-#            if len(node.peptide) < min_length:
-#                # aligned_peptide = '\033[31m' + aligned_peptide + '\033[0m'  # Print in red color
-#                aligned_peptide = aligned_peptide
-#
-#            print(aligned_peptide)
-#            printed_peptides.add(peptide_position)
-#
-#    for child in node.children:
-#        for match in re.finditer(re.escape(child.peptide), sequence[start_index:]):
-#            child_start_index = match.start() + start_index
-#            print_tree(child, sequence, min_length, printed_peptides, child_start_index + 1)
 
 
 def print_aligned_peptide(peptide, start_index, sequence):

@@ -2,7 +2,7 @@ import pandas as pd
 
 from .PeptideNode import PeptideNode
 from .proteases import available_proteases
-from .tools import generate_peptide_tree, draw_tree, extract_peptide_sequences, predict_proteases
+from .tools import generate_peptide_tree, draw_tree, extract_peptide_sequences
 
 
 
@@ -28,13 +28,10 @@ class DigestionSimulator:
 
     def extract_unique_peptide_sequences(self):
         self.unique_peptide_sequences = extract_peptide_sequences(self.root)
-        print('+'*80)
-        print("Extracted unique peptide sequences (excluding root sequence):")
-        for i, _sequence in enumerate(sorted(self.unique_peptide_sequences, key=len)):
-            print(i, _sequence)
-        print('+'*80)
-        
-    def predict_proteases(self, observed_sequences):
-        identified_proteases = predict_proteases(observed_sequences, self.proteases, original_sequence=self.sequence)
-        df = pd.DataFrame(identified_proteases, columns=['Protease', 'Matched_Sites', 'Probability'])
-        return df
+        #print('+'*80)
+        #print("Extracted unique peptide sequences (excluding root sequence):")
+        #for i, _sequence in enumerate(sorted(self.unique_peptide_sequences, key=len)):
+        #    print(i, _sequence)
+        #print('+'*80)
+        return self.unique_peptide_sequences
+
